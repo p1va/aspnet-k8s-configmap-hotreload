@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  demo:
+    container_name: hotreload
+    image: ${REGISTRY}/hotreload:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: HotReload/Dockerfile
+    ports:
+      - 5078:5078

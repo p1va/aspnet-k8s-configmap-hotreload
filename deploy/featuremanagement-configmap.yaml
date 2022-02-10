@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: featuremanagement-configmap
+  namespace: hotreload-demo
+  labels:
+    app: hotreload
+    app.kubernetes.io/name: hotrealod
+data:
+  featureManagement.json: |-
+    {
+      "FeatureManagement": {
+        "app2app": true
+      }
+    }

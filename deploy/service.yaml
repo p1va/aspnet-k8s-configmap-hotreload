@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hotrealod
+  namespace: hotreload-demo
+  labels:
+    app: hotreload
+    app.kubernetes.io/name: hotrealod
+spec:
+  ports:
+    - name: http
+      port: 5078
+      targetPort: 5078
+  selector:
+    app: hotreload

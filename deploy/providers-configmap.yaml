@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: providers-configmap
+  namespace: hotreload-demo
+  labels:
+    app: hotreload
+    app.kubernetes.io/name: hotrealod
+data:
+  providers.json: |-
+    {
+      "ProviderService": {
+        "Providers": [
+          {
+            "id": "provider1",
+            "name": "Provider 1",
+            "allowedClients": [
+                "client1",
+                "client2",
+                "client3"
+            ]
+          },
+          {
+            "id": "provider2",
+            "name": "Provider 2",
+            "allowedClients": [
+                "client1",
+                "client2",
+                "client3"
+            ]
+          },
+          {
+            "id": "provider3",
+            "name": "Provider 3",
+            "allowedClients": [
+                "client1",
+                "client2",
+                "client3"
+            ]
+          }
+        ]
+      }
+    }

@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hotreload-deploy
+  namespace: hotreload-demo
+  labels:
+    app: hotreload
+    app.kubernetes.io/name: hotrealod
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hotreload
+      app.kubernetes.io/name: hotrealod
+  template:
+    metadata:
+      labels:
+        app: hotreload
+        app.kubernetes.io/name: hotrealod
+    spec:
+
+      volumes:
+        # These are the volumes that are going to hold files generated from ConfigMap key value pairs
+        # We set them at the Pod level, then mount them at the container level
+        - name: providers-config-volume
+          configMap:
+            name: providers-configmap
+        - name: featuremanagement-config-volume
+          configMap:
+            name: featuremanagement-configmap
+            # We could cherry pick the ConfigMap keys we want as files in the volume
+            # If we omit the items array instead every key becomes a file with the same name as the key
+            # items:
+            #   - key: "featureManagement.json"
+            #     path: "featureManagement.json"
+
+      containers:
+        - name: demo
+          image: localhost:32000/hotreload:latest
+          ports:
+            - containerPort: 5078
+          env:
+          - name: ASPNETCORE_URLS
+            value: http://+:5078
+            # PhysicalFileProvider
+            
+            # This flag is required in order for the file watcher to poll for changes in a container
+          - name: DOTNET_USE_POLLING_FILE_WATCHER
+            value: "true"
+          
+          # Attach volumes to container
+          # A container mounting a volume with subPath defined will not receive updates when the ConfigMap gets updated
+          # Don't specify subPath if you want files to be updated as a consequence of ConfigMap change
+          # The subPath property specifies a sub-path inside the referenced volume instead of its root.
+          # Mount paths need to be unique and no other file with same name need to be there already otherwise it's going to fail
+          volumeMounts:
+            - name: providers-config-volume
+              mountPath: /app/config/providers
+            - name: featuremanagement-config-volume
+              mountPath: /app/config/feature
+
+      restartPolicy: Always
